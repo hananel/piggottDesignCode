@@ -1,8 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Blade analyze input files
 inp.normalRun = 1;
-
-% Blade analyze input files
 inp.file_input_directory = '/home/hanan/Documents/src/piggott-turbine-design/octave/Input/';
 inp.file_Output_directory = '/home/hanan/src/piggott-turbine-design/octave/Output/';
 inp.file_blade_directory = [inp.file_input_directory 'Geometry/'];
@@ -33,7 +31,7 @@ inp.Vfend = 9;
 
 % Blade analyze output parameters and file names
 inp.filename = 'temp';
-inp.doplots = 0;
+inp.doplots = 1;
 inp.doplotsCp = 1;
 inp.CpCt_fileDirectory = 'Output/';
 inp.CpCt_filename = ['CpCt_' strrep(inp.file_blade,'.txt','')]; % graphic file
@@ -104,7 +102,7 @@ inp.VvecStep = 1;                                        %[m/s]
 inp.color = 'g';
 
 % plot options
-inp.plotGen = 0;
+inp.plotGen = 1;
 if inp.measuredPMG
     inp.plotGen = 0;
 end

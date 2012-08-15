@@ -26,6 +26,7 @@ run(inpFile);
 
 runBladeElement = zenity_list("run blade element?",{"option"},{"yes","no"});
 
+% run blade element?
 switch runBladeElement
  	case {"yes" }
     	returnValue = NewBlade(inp);         
@@ -42,3 +43,11 @@ switch runBladeElement
 		end
 endswitch
 
+% run power curve?
+runPowerCurve = zenity_list("2. match generator to blade Cp curve?",{"option"},{"yes","no,I-wish-to-redesign-the-blades."});
+switch runBladeElement
+ 	case {"yes" }
+    	returnValue = PowerCurve(inp);        
+	else
+		returnValue = feval("runPiggottOctaveGui",1)
+endswitch
