@@ -33,18 +33,36 @@ end
 for i=0:magnet.N-1
     polar(magnet.t+i*magnet.alpha,magnet.r,'b');
 end
+
+% added - 29/10/12 Hanan Einav-Levy
+% Drawing B and C limiting coil circles - according to Hugh Piggott plans (2012) page 40 
+C = floor(min(coil.r));
+B = ceil(max(coil.r));
+circle = 0:0.01:2*pi;
+polar(circle,B*ones(1,length(circle)),'k')
+polar(circle,C*ones(1,length(circle)),'k')
 g = line([0,0],[0 R]);
 set(g,'LineStyle','-.','Color','k','Marker','x');
 text(t,R/2,num2str(R));
 axis([-(R+magnet.length/2)*f (R+magnet.length/2)*f -(R+magnet.length/2)*f (R+magnet.length/2)*f])
+axis off
 axis square
 xlabel('mm')
+disp('')
 if measuredPMG
     titleDesignProperties = sprintf('Design properties\nused just for drawing\nPMG data from measurements');
     disp(titleDesignProperties)
 else
-    titleDesignProperties = sprintf('Design properties\nMagnet field strength = %2.2f Tesla\nFF = %2.0f%% coil thickness = %2.0f mm\nAWG %2.0f# X %2.0f with %2.0f turns',magnet.B,coil.FF*100,coil.thickness,coil.AWG,coil.wireN,coil.turns);
-    disp(titleDesignProperties)
+    if coil.AWG
+        titleDesignProperties = sprintf('Design properties\nMagnet field strength = %2.2f Tesla\nFF = %2.0f%%\nAWG %2.0f# X %1d with %2.0f turns',magnet.B,coil.FF*100,coil.AWG,coil.wireN,coil.turns);
+    else
+        titleDesignProperties = sprintf('Design properties\nMagnet field strength = %2.2f Tesla\nFF = %2.0f%%\nCoil %2.1f mm diameter X %1d with %2.0f turns',magnet.B,coil.FF*100,coil.mm, coil.wireN,coil.turns);
+    end
+    textStr = {titleDesignProperties,['p. 40 limiting values of B = ',num2str(B),' [mm], C = ',num2str(C),' [mm]'],['Coil thickness (maximum mold thickness) = ',num2str(coil.thickness),' [mm]'],['Coil number = ',num2str(coil.N)],['Magnet number = ',num2str(magnet.N)]};
+    for ii=1:length(textStr)
+        disp(textStr{ii})
+    end
+    text(-B,2*B,textStr)
 end
 
 subplot(1,2,2); hold on;
@@ -56,13 +74,14 @@ text((magnet.width/2+coil.legWidth)/2,t/3,num2str(coil.legWidth,3));
 text(-magnet.width,0,num2str(magnet.length,3));
 text(-t/2,magnet.length/2+t/2,num2str(magnet.width,3));
 axis equal
+axis off
 axis square
 xlabel('mm')
 
 if measuredPMG
     titleMeasuredPMG=sprintf('PMG properties\nKg = %2.1f [volt/RPM]\nRg =  %2.1f\n\nSystem properties\nRcable = %2.2f Ohm\nRbatt = %2.2f Ohm',coil.Kg,coil.Rg,Rw,r);
-    disp(titleMeasuredPMG)
 else
     titleMeasuredPMG=sprintf('PMG properties\nKg = %2.1f [volt/RPM]\nRg = %2.1f Ohm-impedence\n\nSystem properties\nRcable = %2.2f Ohm\nRbatt = %2.2f Ohm',coil.Kg,coil.Rg,Rw,r);
-    disp(titleMeasuredPMG)
 end
+disp(titleMeasuredPMG)
+subplot(1,2,1); text(-B,-B*1.6,titleMeasuredPMG)

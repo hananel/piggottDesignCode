@@ -36,7 +36,17 @@ coil.legWidth         = (coil.width - magnet.width)/2;                       %[m
 coil.lAvg             = 2*(magnet.width+magnet.length) + pi * coil.legWidth; %[mm]
 coil.l                = coil.lAvg * coil.turns;
 coil.sqmm             = coil.legWidth* coil.thickness * coil.FF / coil.turns;
-[coil.AWG,coil.sqmm,coil.AWG_sqmm,coil.wireN]  = AWGfinder(coil.sqmm);
+if coil.AWG
+    [coil.AWG,coil.sqmm,coil.AWG_sqmm,coil.wireN]  = AWGfinder(coil.sqmm);
+else
+    if coil.sqmm>pi*(1.8/2^2) % Piggott's plans seem to use this rule
+        coil.wireN = 2;
+    else
+        coil.wireN = 1;
+    end
+    coil.mm = 2*round(sqrt(coil.sqmm/coil.wireN/pi)*10)/10; % diameter [mm]
+    coil.sqmm = coil.wireN*pi/4*coil.mm^2; % [mm^2]
+end
 coil.m                = coil.l * coil.sqmm * 0.009;                          %[gr]
 coil.R                = coil.l / coil.sqmm / 56000;                          %[Ohm @ 20C]
 Rg                    = 2 * coil.series * coil.R * coil.factor;      %[Ohm @ 20C] - corrected by 1.3 thumb rule, to imply impedence rather then resistence

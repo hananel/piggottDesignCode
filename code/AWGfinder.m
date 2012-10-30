@@ -49,11 +49,20 @@ Table(:,3) = pi*Table(:,2).^2/4;
 % assuming - if the result is bigger then AWG#14 (thath is - smaller AWG)
 % then using two wires in parralel
 wireN = 1;
-AWG = Table(find(Table(:,3)<area,1,'last'),1);
-sqmm = Table(find(Table(:,1) == AWG,1,'first'),3);
-if AWG<10
-    wireN = 2;
-    AWG = Table(find(Table(:,3) < area/2,1,'last'),1);
-    sqmm = Table(find(Table(:,1) == AWG,1,'first'),3)*2;
+if nargin>0
+    AWG = Table(find(Table(:,3)<area,1,'last'),1);
+    sqmm = Table(find(Table(:,1) == AWG,1,'first'),3);
+    if AWG<10
+        wireN = 2;
+        AWG = Table(find(Table(:,3) < area/2,1,'last'),1);
+        sqmm = Table(find(Table(:,1) == AWG,1,'first'),3)*2;
+    end
+    AWG_sqmm = sqmm/area;
+else
+    disp('AWG table')
+    disp('  AWG   | diameter [mm]| area [mm^2]')
+    for i=1:length(Table)
+        disp(sprintf('%7.2f | %7.2f      | %7.2f',Table(i,1),Table(i,2),Table(i,3)));
+    end
 end
-AWG_sqmm = sqmm/area;
+

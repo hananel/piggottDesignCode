@@ -83,7 +83,7 @@ RPM = RPM .* linspace(1,inp.RPMcor,length(RPM));
 if nargin == 2
     f = figure(10); hold on;
     set(f,'Position',[000 000 500 300 ])
-    title('Generator model');
+    title({'Generator model','Efficiency in yellow','Shaft power in magenta','Battery power in blue'});
     RPMminPos = find(Pshaft>0,1,'first');
     RPMmaxPos = find(eff>40,1,'last');
     RPMplot = RPM(RPMminPos:RPMmaxPos);
@@ -102,7 +102,7 @@ if nargin == 2
     for i=RPMspacedVec(2:end-1)
         text(RPM(i)+shiftx,Pb(i)-shifty,[num2str(V(i),'%3.1f') ' V']);
     end
-    legend([H3,H1,H2],'Power out', 'Power in', 'Efficiency','Location','SouthEast')
+    %legend([H3,H1,H2],'Power out', 'Power in', 'Efficiency','Location','SouthEast')
     set(AX(2),'Ylim',[0 100]); set(AX(2),'YTick',0:10:100);
     ylabel(AX(1),'Power [W]'); ylabel(AX(2),'Efficiency [%]'); xlabel('RPM');
     

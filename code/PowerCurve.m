@@ -6,9 +6,10 @@ function [minimum] = PowerCurve(inp,constantPMG)
 
 %load InpFile
 
+unlink([inp.name,'.pdf']);
 % Input_NewBlade.m reads inp.file_blade geometry and interpolates to inp.Nr
 % elements
-
+disp('');
 inp.normalRun = 1;
 Input_NewBlade
 
@@ -22,7 +23,6 @@ if(~inp.plotoff)
     set(f,'Position',[500 500 500 400 ])
 end
 i = 0;
-
 % input - from seperate file
 [CpData CtData TSR VData] = loadCpCtData(inp);
 
@@ -38,13 +38,12 @@ if (~inp.plotoff && inp.plotGen)
     [inp.coil, inp.magnet] = plotStator(inp.coil,inp.magnet,inp.Rstator*1000,inp.Rw,inp.r,inp.measuredPMG);
     set(gcf,'Color','w');
     %plot2svg([inp.file_Output_directory '/startor_' inp.filename '.svg']);
-    print( gcf, '-dpng', [inp.file_Output_directory '/startor_' inp.filename '.png'])
+    print( gcf, '-dpng', [inp.file_Output_directory '/stator_' inp.filename '.png'])
 end
 
 inp.RPMmax = TSR(end) * Vvec(end) / R * 30/pi*1.1;         %[RPM] max range of generator
 inp.RPMmin = 0;
 i = 0;
-
 if ~inp.plotoff figure(1); hold on;end
 
 for V = Vvec
@@ -148,7 +147,9 @@ if ~(nargin==2)
 end
 if(~inp.plotoff)
     figure(1); subplot(321); hold on;
-    xlabel('RPM'); ylabel('P [Watt]')
+    ylabel('P [Watt]')
+    title('Watt vs. RPM')
+    set(gca,'xtick',round(linspace(inp.RPMmin,inp.RPMmax,6)/100)*100)
     if ~(nargin==2)
         
         if inp.compare2TestData         % comparing to data
@@ -167,12 +168,12 @@ if(~inp.plotoff)
                 plot(TestData(:,1),100*TestData(:,2)./(.5*rho*TestData(:,1).^3*pi*inp.R^2),'r.');
             end
             axis([Vvec(1) Vvec(end) 0 59.3])
-            plot(Vvec,Beff,inp.color); plot(Vvec,Geff,inp.color,'LineWidth',2);
+            plot(Vvec,Beff,'g-.'); plot(Vvec,Geff,inp.color,'LineWidth',6);
             legend('Data [%]','Blade eff [%]','Overall eff [%]');
             ylabel('Efficiency [%]')
             subplot(3,2,[5 6]); hold on;
-            plot(Vvec,TSRi,inp.color,'LineWidth',2);
-            plot([min(Vvec) max(Vvec)],[TSRopt TSRopt],inp.color);
+            plot(Vvec,TSRi,inp.color,'LineWidth',4);
+            plot([min(Vvec) max(Vvec)],[TSRopt TSRopt],'g-.');
             if size(TestData,2)>2
                 plot(TestData(:,1),TestData(:,3),'r.');
                 legend('TSR','TSRopt','Data');
@@ -181,11 +182,12 @@ if(~inp.plotoff)
             end
         else
             subplot(3,2,[3 4]);hold on;
-            hold on; plot(Vvec,Beff,inp.color); plot(Vvec,Geff,inp.color,'LineWidth',2);
+            hold on; plot(Vvec,Beff,inp.color); plot(Vvec,Geff,inp.color,'LineWidth',6);
             legend('Blade eff [%]','Overall eff[%]');
             ylabel('Efficiency [%]')
             subplot(3,2,[5 6]); hold on;
-            plot(Vvec,TSRi,[ inp.color ],[min(Vvec) max(Vvec)],[TSRopt TSRopt],inp.color);
+            plot(Vvec,TSRi,[ inp.color ])
+            plot([min(Vvec) max(Vvec)],[TSRopt TSRopt],inp.color,'LineWidth',6);
             legend('TSR','TSRopt');
         end
         
@@ -196,8 +198,7 @@ if(~inp.plotoff)
         plot(Vvec,P/1000);
     else
         plot(Vvec,Pcharge,inp.color);
-        ylabel('P in battery [W]')
-        xlabel('V [m/s]');
+        title('Power curve, watts vs. m/s')
         grid on;
     end
 end
@@ -221,10 +222,13 @@ if length(Vvec)>1
     WBLscale = 5; WBLshape = 2;
     windPdfInRange = exp(-(V(1:end-1)./WBLscale).^WBLshape) - exp(-(V(2:end)./WBLscale).^WBLshape);
     dV = V(2)-Vvec(1); Venergy = V(1:end-1)+dV/2;
-    energyDist = 0.5*(Pcharge(1:end-1) + Pcharge(2:end)).*windPdfInRange * 24; %[kwh/day / (dV) ]
+    energyDist = 0.5*(Pcharge(1:end-1) + Pcharge(2:end)).*windPdfInRange * dV * 24; %[wh/day / (dV) ]
     minimum = -abs(sum(energyDist));
-    disp(['For a hub height condition of c,k = ' num2str(WBLscale) ',' num2str(WBLshape) ', output is: ' num2str(sum(energyDist)) ' wh'])
-    
+    textStr = {['For hub height conditions c = ' num2str(WBLscale) ' [m/s], k = ',num2str(WBLshape)],[ 'V_{avg} = ',num2str(round(WBLscale*gamma(1+1/WBLshape)*10)/10),'[m/s] output is: ' num2str(round(sum(energyDist/100)/10)) ' kWh/day']};
+    figure(3); title(textStr);
+    for ii=1:length(textStr)
+        disp(textStr{ii});
+    end
     %available energy
     P = 0.5*rho*Vvec.^3*pi*R^2;
     Edist = 0.5*(P(1:end-1) + P(2:end)).*windPdfInRange * 24; %[wh/day / (dV) ]
@@ -244,6 +248,17 @@ else
     disp('WindyBoy optimization point:');
     disp(['V[m/s] = ' num2str(Vvec) ' Pcharge[Watt] = ' num2str(Pcharge) ' Volts = ' num2str(inp.Vb)]);
     minimum = 0;
+end
+
+disp('')
+
+for i=1:3
+    figure(i)
+    print('-dpdf',[inp.name,'.pdf'],'-append')
+end
+if inp.plotGen
+    figure(10)
+    print('-dpdf',[inp.name,'.pdf'],'-append')
 end
 %fflush(stdout);
 

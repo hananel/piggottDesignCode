@@ -1,10 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Blade analyze input files
 inp.normalRun = 1;
-
-% Input and output file locations
-inp.file_input_directory = '/Users/hananlevy/src/piggott-turbine-design/octave/Input/';
-inp.file_Output_directory = '/Users/hananlevy/src/piggott-turbine-design/octave/Output/';
+inp.file_input_directory = '/home/hanan/bin/Projects/piggott-turbine-design/octave/Input/';
+inp.file_Output_directory = '/home/hanan/bin/Projects/piggott-turbine-design/octave/Output/';
 inp.file_blade_directory = [inp.file_input_directory 'Geometry/'];
 inp.file_blade = 'CometME4.2_Nb3_NACA44XX.txt';
 inp.R = 2.1; % [m]
@@ -63,7 +61,7 @@ inp.chord75 = 0.08;             %[m]
 % generator data
 inp.coil.series = 5;            % number of coils at series
 inp.coil.N = 15;                 % number of coils
-inp.coil.FF = 0.86;             % actual filling of coil rectangle with wire. Hugh Piggot's number
+inp.coil.FF = 0.55;             % actual filling of coil rectangle with wire. Hugh Piggot's number
 inp.coil.turns = 70;
 inp.coil.thickness = 12;
 inp.magnet.N = 20; %12          % number of magnets

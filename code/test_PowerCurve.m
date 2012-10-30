@@ -1,7 +1,7 @@
 function minimum = test_PowerCurve()
 
 % input
-inp_CometME42Windy
+inp_EWB3000
 
 % run PowerCurve
 [minimum] = PowerCurve(inp);

@@ -4,7 +4,11 @@ function returnValue = runPiggottOctaveGui(flag)
 % run without flag
 %
 % written by Hanan Einav-Levy 17-08-2012
- 
+
+clear all
+close all
+warning off
+
 pkg load zenity 
 
 if nargin<1 
@@ -23,6 +27,9 @@ inpFile = zenity_list("select input file", {"Name"},{dir('inp_*.m').name});
 
 % load input
 run(inpFile);
+figure(100); 
+text(0,0.4,datestr(now),'color','r','fontSize',24)
+text(0,0.2,{['Input file:'],strrep(inpFile,'_','\_')},'fontSize',28)
 
 runBladeElement = zenity_list("run blade element?",{"option"},{"yes","no"});
 
@@ -45,9 +52,9 @@ endswitch
 
 % run power curve?
 runPowerCurve = zenity_list("2. match generator to blade Cp curve?",{"option"},{"yes","no,I-wish-to-redesign-the-blades."});
-switch runBladeElement
+switch runPowerCurve
  	case {"yes" }
     	returnValue = PowerCurve(inp);        
-	else
+	otherwise
 		returnValue = feval("runPiggottOctaveGui",1)
 endswitch

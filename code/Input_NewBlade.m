@@ -6,6 +6,10 @@ Nr = inp.Nr;                   % number of blade elements
 
 %GEOMETRY
 if inp.normalRun disp(['Loading blade file ' inp.file_blade]); end
+figure(100); text(0,0,{['Blade file:'],[strrep(inp.file_blade,'_','\_')]},'fontSize',28);
+axis([-0.1 0.5 -0.2 0.5])
+axis off
+print('-dpdf',inp.name,'-append')
 [blade] = readbladeS(inp); % reading the blade geometery from inp.file_blade
 %disp('using 2*pi*R/(r - r0)*tan(beta0) distribution')
 %Dm = 0.3; R = 0.15

@@ -5,6 +5,7 @@ inp.file_input_directory = '/home/hanan/Documents/src/piggott-turbine-design/oct
 inp.file_Output_directory = '/home/hanan/src/piggott-turbine-design/octave/Output/';
 inp.file_blade_directory = [inp.file_input_directory 'Geometry/'];
 inp.file_blade = 'CometME4.2_Nb3_NACA44XX.txt';
+inp.R = 2.1; % [m]
 
 % blade analyze physical parameters
 inp.beta0 = 0;
@@ -25,9 +26,9 @@ inp.epsilon = 0.01;
 inp.TSRstart = 1; 
 inp.TSRend = 14; 
 inp.TSRstep = 1;
-inp.Vfstart = 2;
-inp.Vfstep = 1;
-inp.Vfend = 9;
+inp.Vfstart = 1;
+inp.Vfstep = 2;
+inp.Vfend = 13;
 
 % Blade analyze output parameters and file names
 inp.filename = 'temp';
@@ -54,9 +55,6 @@ inp.compare2TestData = 1;
 inp.TestData_fileDirectory = [inp.file_input_directory 'TestData/'];
 inp.TestData_file = 'power_wind_shaeb_windyBoy.txt';
 inp.R = 2.1; % [m]
-
-% plotting
-inp.plotoff = 0;
 
 % misc
 inp.chord75 = 0.08;             %[m]
@@ -85,12 +83,12 @@ inp.RPMcor = 1;  % a empirical correction for reduced Kg with RPM - multiplying 
 % Km = Ke*30/pi
 % 
 % wiring and battery data
-inp.Vb = 575.6669; %24                                        % [Volt]
+inp.Vb = 530.6669; %24                                        % [Volt]
 inp.loadVlaw = 0; % law of voltage change with current - using proxy for velocity instead, 
                   % based on simple piece wise linear interpolation from CometME4.2 data
 % load controlVoltage 
-inp.WindyBoy = 1;
-inp.useVoltageControl = 1; % 0 = don't use, 1 = usee optimal power control, 2 use optimal TSR control
+inp.WindyBoy = 0;
+inp.useVoltageControl = 0; % 0 = don't use, 1 = usee optimal power control, 2 use optimal TSR control
 inp.VoltageControlDelta = 0;
 inp.Rw = 0.05;            %  [Ohm]
 inp.r = 0;             % [Ohm] battery internal resistence
@@ -103,6 +101,7 @@ inp.color = 'g';
 
 % plot options
 inp.plotGen = 1;
+inp.plotoff = 0;
 if inp.measuredPMG
     inp.plotGen = 0;
 end
